@@ -1,7 +1,7 @@
 
 # coding: utf-8
 
-# Import Files 
+# Import Files
 
 # In[1]:
 
@@ -31,24 +31,24 @@ def _import_market_class(class_name):
 def _classify_market_symbol():
     market_instances_dict = dict()
     print('In Progress...')
-    
+
     for market in market_list:
         market_instance = _import_market_class(market)()
-        
+
         try:
             market_instance.load_products()
         except:
             print('Load products error: ', market_instance.id)
             continue
-        
+
         market_symbols = market_instance.symbols
-        
+
         for each_symbol in market_symbols:
             if each_symbol in market_instances_dict:
                 market_instances_dict[each_symbol] += [market_instance]
             else:
                 market_instances_dict[each_symbol] = [market_instance]
-    
+
     return market_instances_dict
 
 
@@ -59,7 +59,7 @@ def _classify_market_symbol():
 def _match_market_pair():
     market_pair_list = list()
     market_instances_dict = _classify_market_symbol()
-    
+
     for each_symbol in market_instances_dict:
         each_market_instances_list = market_instances_dict[each_symbol]
         main_index = 0
@@ -106,30 +106,30 @@ class MarketData:
         self.market = market
         self.market_instance = self._instantiate_market()
         self._load_products(self.market_instance)
-        
+
         assert (symbol in self.market_instance.symbols), symbol + ' is not'
         self.symbol = symbol
 
     def _instantiate_market(self):
         return _import_market_class(self.market)()
-        
+
     def _load_products(self, market_instance):
-        return self.market_instance.load_products()
-        
+        return self.market_instance.load_markets()
+
     def _get_tickers(self, market_instance):
         try:
             return market_instance.fetch_ticker(self.symbol)
-        
+
         except:
             return False
-    
+
     def _get_orderbook(self, market_instance):
-        try:         
+        try:
             return market_instance.fetchOrderBook(self.symbol)
-            
+
         except:
             return False
-        
+
     def save_price(self):
         create_db()
         create_table()
@@ -139,13 +139,13 @@ class MarketData:
 
             orderbook = self._get_orderbook(self.market_instance)
             end_tick = time.time()
-        
+
             if orderbook != False:
                 is_insert = insert_data(orderbook, self.market, self.symbol,  end_tick - start)
-                if is_insert: 
+                if is_insert:
                     end = time.time()
                     print('Get tick at', datetime.now().strftime("%Y-%m-%d %H:%M:%S"), 'CPU Time:', end - start)
-            
+
             else:
                 end = time.time()
                 print('Fail to get tick at', datetime.now().strftime("%Y-%m-%d %H:%M:%S"), 'CPU Time:', end - start )
@@ -171,6 +171,3 @@ else:
 
 
 # In[ ]:
-
-
-
