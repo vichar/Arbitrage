@@ -102,12 +102,12 @@ def available_pair_market(symbol='all'):
 
 class MarketData:
     def __init__(self, market='bitmex', symbol='BTC/USD'):
-        assert (market in market_list), 'Market is not in market list'
+        assert (market in market_list), 'Market is not on the market list'
         self.market = market
         self.market_instance = self._instantiate_market()
         self._load_products(self.market_instance)
 
-        assert (symbol in self.market_instance.symbols), symbol + ' is not'
+        assert (symbol in self.market_instance.symbols), symbol + ' is not a valid symbol'
         self.symbol = symbol
 
     def _instantiate_market(self):
